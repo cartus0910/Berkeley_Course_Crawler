@@ -206,7 +206,7 @@ Take this course for example, you can copy the link of whatever course you want:
 4. Once you are done, just type in "no".
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step4.png)
 
-5. The result would be save to excel file(.xlsx) in the left-side panel. Just download the whole file as .zip
+5. The result would be saved to excel file(.xlsx) in the left-side panel. Just download the whole file as .zip
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step5.png)
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step5.5.png)
 
