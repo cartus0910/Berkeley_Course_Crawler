@@ -4,14 +4,13 @@ Created on Sat Jul  4 23:32:27 2020
 
 @author: USER
 """
+import requests
+from datetime import datetime, timedelta
+import json
+import pandas as pd
+from bs4 import BeautifulSoup
 
 def course_extract(url):
-    
-    import requests
-    from datetime import datetime, timedelta
-    import json
-    import pandas as pd
-    from bs4 import BeautifulSoup
     
     r = requests.get(url)
     soup = BeautifulSoup(r.text, "html.parser")
@@ -28,9 +27,12 @@ def course_extract(url):
         mode = js_dict["attributes"]["WEB"][0]["value"]["formalDescription"]
     except KeyError:
         mode = "Pending Reviews"
-    
-    instructor = js_dict["meetings"][0]["assignedInstructors"]
-    instructors = ', '.join([str(i["instructor"]["names"][1]["formattedName"]) for i in instructor])
+        
+    try:
+        instructor = js_dict["meetings"][0]["assignedInstructors"]
+        instructors = ', '.join([str(i["instructor"]["names"][1]["formattedName"]) for i in instructor])
+    except KeyError:
+        instructors = "None"
     
     try:
         units = js_dict["course"]["credit"]["value"]["fixed"]["units"]
@@ -57,8 +59,8 @@ def course_extract(url):
     sf_start_dt = " / ".join([str(i.strftime("%a %H:%M")) for i in fake_start_dt])
     sf_end_dt = " / ".join([str(i.strftime("%a %H:%M")) for i in fake_end_dt])
     
-    tw_start_dt = " / ".join([str((i + timedelta(hours=9)).strftime("%a %H:%M")) for i in fake_start_dt])
-    tw_end_dt = " / ".join([str((i + timedelta(hours=9)).strftime("%a %H:%M")) for i in fake_end_dt])
+    tw_start_dt = " / ".join([str((i + timedelta(hours=15)).strftime("%a %H:%M")) for i in fake_start_dt])
+    tw_end_dt = " / ".join([str((i + timedelta(hours=15)).strftime("%a %H:%M")) for i in fake_end_dt])
     
     description = js_dict["course"]["description"]
     final = js_dict["course"]["finalExam"]["description"]
@@ -102,8 +104,17 @@ def multiple_extract(url_list):
         info = course_extract(i)
         information = information.append(info, ignore_index=True)
     return information.iloc[1:]
-    
 
-course_extract("https://classes.berkeley.edu/content/2020-fall-indeng-290-004-lec-004")
-url_list = ["https://classes.berkeley.edu/content/2020-fall-indeng-290-004-lec-004", "https://classes.berkeley.edu/content/2020-fall-civeng-199-001-ind-001", "https://classes.berkeley.edu/content/2020-fall-indeng-290-004-lec-004"]
-multiple_extract(url_list)
+url_list = []
+while True:
+    multi = "yes"
+    url = str(input("Please enter the link of course:"))
+    multi = input("Do you wanna search for more courses?[yes/no]:")
+    url_list.append(url)
+    if multi == 'no':
+        result = multiple_extract(url_list)
+        result.to_clipboard(excel=True,sep='\t')
+        print("Your result have been stored to your clipboard. You can paste it onto excel/google sheet/database.")
+        break
+input("Press enter to exit")
+    

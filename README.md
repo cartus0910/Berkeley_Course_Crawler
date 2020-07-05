@@ -64,8 +64,8 @@ def course_extract(url):
     sf_start_dt = " / ".join([str(i.strftime("%a %H:%M")) for i in fake_start_dt])
     sf_end_dt = " / ".join([str(i.strftime("%a %H:%M")) for i in fake_end_dt])
     
-    tw_start_dt = " / ".join([str((i + timedelta(hours=9)).strftime("%a %H:%M")) for i in fake_start_dt])
-    tw_end_dt = " / ".join([str((i + timedelta(hours=9)).strftime("%a %H:%M")) for i in fake_end_dt])
+    tw_start_dt = " / ".join([str((i + timedelta(hours=15)).strftime("%a %H:%M")) for i in fake_start_dt])
+    tw_end_dt = " / ".join([str((i + timedelta(hours=15)).strftime("%a %H:%M")) for i in fake_end_dt])
     
     description = js_dict["course"]["description"]
     final = js_dict["course"]["finalExam"]["description"]
@@ -122,6 +122,16 @@ table.dataframe td, table.dataframe th {
 }
 </style>
 ```
+
+
+<style type="text/css">
+table.dataframe td, table.dataframe th {
+    border: 1px  black solid !important;
+  color: black !important;
+}
+</style>
+
+
 
 ## Demonstration
 
@@ -182,8 +192,8 @@ result
       <td>4</td>
       <td>Tue 14:00 / Thu 14:00</td>
       <td>Tue 15:29 / Thu 15:29</td>
-      <td>Tue 23:00 / Thu 23:00</td>
-      <td>Wed 00:29 / Fri 00:29</td>
+      <td>Wed 05:00 / Fri 05:00</td>
+      <td>Wed 06:29 / Fri 06:29</td>
       <td>Written final exam conducted during the schedu...</td>
       <td>This course develops the probabilistic foundat...</td>
     </tr>
@@ -259,8 +269,8 @@ multiple_results
       <td>4</td>
       <td>Tue 14:00 / Thu 14:00</td>
       <td>Tue 15:29 / Thu 15:29</td>
-      <td>Tue 23:00 / Thu 23:00</td>
-      <td>Wed 00:29 / Fri 00:29</td>
+      <td>Wed 05:00 / Fri 05:00</td>
+      <td>Wed 06:29 / Fri 06:29</td>
       <td>Written final exam conducted during the schedu...</td>
       <td>This course develops the probabilistic foundat...</td>
     </tr>
@@ -293,8 +303,8 @@ multiple_results
       <td>2 to 3</td>
       <td>Tue 14:00 / Thu 14:00</td>
       <td>Tue 15:29 / Thu 15:29</td>
-      <td>Tue 23:00 / Thu 23:00</td>
-      <td>Wed 00:29 / Fri 00:29</td>
+      <td>Wed 05:00 / Fri 05:00</td>
+      <td>Wed 06:29 / Fri 06:29</td>
       <td>Written final exam conducted during the schedu...</td>
       <td>Lectures and appropriate assignments on fundam...</td>
     </tr>
