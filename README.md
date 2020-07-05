@@ -133,6 +133,67 @@ result
 ```
 
 
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Course_No.</th>
+      <th>Serial_NO.</th>
+      <th>Course_Name</th>
+      <th>Level</th>
+      <th>Type</th>
+      <th>Mode</th>
+      <th>Instructor(s)</th>
+      <th>Units</th>
+      <th>Start_Time(SF_time)</th>
+      <th>End_Time(SF_time)</th>
+      <th>Start_Time(TW_time)</th>
+      <th>End_Time(TW_time)</th>
+      <th>Final_Examination</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>2020 Fall DATA C102 001 LEC 001</td>
+      <td>33319</td>
+      <td>Data, Inference, and Decisions</td>
+      <td>Undergraduate</td>
+      <td>Lecture</td>
+      <td>Pending Reviews</td>
+      <td>Michael  Jordan, Jacob Noah  Steinhardt</td>
+      <td>4</td>
+      <td>Tue 14:00 / Thu 14:00</td>
+      <td>Tue 15:29 / Thu 15:29</td>
+      <td>Tue 23:00 / Thu 23:00</td>
+      <td>Wed 00:29 / Fri 00:29</td>
+      <td>Written final exam conducted during the schedu...</td>
+      <td>This course develops the probabilistic foundat...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
 ```python
 # copy the result and paste it on your excel/Google Sheet/Database
 result.to_clipboard(excel=True,sep='\t')
@@ -147,6 +208,101 @@ url_list = ["https://classes.berkeley.edu/content/2020-fall-data-c102-001-lec-00
 multiple_results = multiple_extract(url_list)
 multiple_results
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Course_No.</th>
+      <th>Serial_NO.</th>
+      <th>Course_Name</th>
+      <th>Level</th>
+      <th>Type</th>
+      <th>Mode</th>
+      <th>Instructor(s)</th>
+      <th>Units</th>
+      <th>Start_Time(SF_time)</th>
+      <th>End_Time(SF_time)</th>
+      <th>Start_Time(TW_time)</th>
+      <th>End_Time(TW_time)</th>
+      <th>Final_Examination</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>2020 Fall DATA C102 001 LEC 001</td>
+      <td>33319</td>
+      <td>Data, Inference, and Decisions</td>
+      <td>Undergraduate</td>
+      <td>Lecture</td>
+      <td>Pending Reviews</td>
+      <td>Michael  Jordan, Jacob Noah  Steinhardt</td>
+      <td>4</td>
+      <td>Tue 14:00 / Thu 14:00</td>
+      <td>Tue 15:29 / Thu 15:29</td>
+      <td>Tue 23:00 / Thu 23:00</td>
+      <td>Wed 00:29 / Fri 00:29</td>
+      <td>Written final exam conducted during the schedu...</td>
+      <td>This course develops the probabilistic foundat...</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2020 Fall CIVENG 199 001 IND 001</td>
+      <td>16638</td>
+      <td>Supervised Independent Study</td>
+      <td>Undergraduate</td>
+      <td>Independent Study</td>
+      <td>Pending Reviews</td>
+      <td>Norman A Abrahamson</td>
+      <td>1 to 4</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>No final exam</td>
+      <td>Supervised independent study.</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>2020 Fall INDENG 290 004 LEC 004</td>
+      <td>32956</td>
+      <td>Special Topics in Industrial Engineering and O...</td>
+      <td>Graduate</td>
+      <td>Lecture</td>
+      <td>Asynchronous Instruction</td>
+      <td>Barna  Saha</td>
+      <td>2 to 3</td>
+      <td>Tue 14:00 / Thu 14:00</td>
+      <td>Tue 15:29 / Thu 15:29</td>
+      <td>Tue 23:00 / Thu 23:00</td>
+      <td>Wed 00:29 / Fri 00:29</td>
+      <td>Written final exam conducted during the schedu...</td>
+      <td>Lectures and appropriate assignments on fundam...</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
