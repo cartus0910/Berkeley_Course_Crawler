@@ -186,8 +186,8 @@ multiple_results
 
 ## For non-python environmnet
 
-You can just process through online environment here
-Just visit [my repl here](https://repl.it/@cartus0910/TrimOrchidBootstrapping-2) and follow the instructions below.
+You can just process through online environment here.
+#### Just visit **[my repl here](https://repl.it/@cartus0910/TrimOrchidBootstrapping-2)** and follow the instructions below.
 
 Take this course for example, you can copy the link of whatever course you want:
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/webpage.png)
