@@ -182,8 +182,12 @@ multiple_results.to_clipboard(excel=True,sep='\t') # copy the result, so you can
 multiple_results
 ```
 
-Or You can just process through online environment here
-Just visit [my repl](https://repl.it/@cartus0910/TrimOrchidBootstrapping-2) and follow the instructions below.
+***
+
+## For non-python environmnet
+
+You can just process through online environment here
+Just visit [my repl here](https://repl.it/@cartus0910/TrimOrchidBootstrapping-2) and follow the instructions below.
 
 1. Just ignore all the code that you see. Click "run" button directly.
 *  Note: it may takes a few minutes do download all the packages needed.
