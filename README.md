@@ -183,5 +183,18 @@ multiple_results
 ```
 
 Or You can just process through online environment here
-Just follow the instructions.
-<iframe height="400px" width="100%" src="https://repl.it/@cartus0910/TrimOrchidBootstrapping-2?lite=true" scrolling="no" frameborder="no" allowtransparency="true" allowfullscreen="true" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-modals"></iframe>
+Just visit [my repl](https://repl.it/@cartus0910/TrimOrchidBootstrapping-2) and follow the instructions below.
+
+1. Just ignore all the code that you see. Click "run" botton directly.
+*  Note: it may takes a few minutes do download all the packages needed.
+
+2. If all the packages have been downloaded. The right side will show an instruction that ask you to enter a link of course.
+*  Note: ctrl+v may not work in the section, please right click and paste the link instead.
+
+3. Follow the instruction, if you have more courses to search, type in "yes".
+
+4. Once you are done, just type in "no".
+
+5. The result would be save to excel file(.xlsx) in the left-side panel. Just download the whole file as .zip
+
+6. Open your zip file so you can see your course-list.
