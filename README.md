@@ -185,16 +185,23 @@ multiple_results
 Or You can just process through online environment here
 Just visit [my repl](https://repl.it/@cartus0910/TrimOrchidBootstrapping-2) and follow the instructions below.
 
-1. Just ignore all the code that you see. Click "run" botton directly.
+1. Just ignore all the code that you see. Click "run" button directly.
 *  Note: it may takes a few minutes do download all the packages needed.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step1.png)
 
 2. If all the packages have been downloaded. The right side will show an instruction that ask you to enter a link of course.
 *  Note: ctrl+v may not work in the section, please right click and paste the link instead.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step2.png)
 
 3. Follow the instruction, if you have more courses to search, type in "yes".
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step3.png)
 
 4. Once you are done, just type in "no".
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step4.png)
 
 5. The result would be save to excel file(.xlsx) in the left-side panel. Just download the whole file as .zip
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step5.png)
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step5.5.png)
 
 6. Open your zip file so you can see your course-list.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step6.png)
