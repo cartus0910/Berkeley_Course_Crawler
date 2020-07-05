@@ -181,3 +181,7 @@ multiple_results.to_clipboard(excel=True,sep='\t') # copy the result, so you can
 #check the result
 multiple_results
 ```
+
+Or You can just process through online environment here
+Just follow the instructions.
+<iframe height="400px" width="100%" src="https://repl.it/@cartus0910/TrimOrchidBootstrapping-2?lite=true" scrolling="no" frameborder="no" allowtransparency="true" allowfullscreen="true" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-modals"></iframe>
