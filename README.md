@@ -23,22 +23,6 @@ info.head()
 ```
 
 
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -378,7 +362,7 @@ info.to_clipboard(excel=True,sep='\t')
 
 ## For non-python environmnet
 
-If you don't have a python environment, welcome to use [the service from my webiste](http://homepage.ntu.edu.tw/~b06208002/service/replit.html) via replit.
+If you don't have a python environment, welcome to use **[the service from my webiste](http://homepage.ntu.edu.tw/~b06208002/service/replit.html)** via replit.
 
 Take this course for example, you can copy the link of whatever course you want:
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/webpage.png)
