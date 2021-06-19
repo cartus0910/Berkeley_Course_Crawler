@@ -360,9 +360,12 @@ info.to_clipboard(excel=True,sep='\t')
 
 ```
 
+All the codes are available via **[my google colab .ipynb](https://colab.research.google.com/drive/1shtFq-xr6Q26QwZos4cMGl5AsS_Yhusz?usp=sharing)**, and you can make a copy to implement it on your onw.
+
 ## For non-python environmnet
 
 If you don't have a python environment, welcome to use **[the service from my webiste](http://homepage.ntu.edu.tw/~b06208002/service/replit.html)** via replit.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/service_webpage.png)
 
 Take this course for example, you can copy the link of whatever course you want:
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/webpage.png)
@@ -390,4 +393,5 @@ Take this course for example, you can copy the link of whatever course you want:
 7. If you wanna  wanna export the result as excel(.xlsx) file, type in  "yes". Otherwise, type in "no".
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step7.png)
 
-8. The result would be saved to excel file(.xlsx) in the "code" panel. Just download the whole file as .zip
+8. Just download all the files as .zip
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/step8.png)
