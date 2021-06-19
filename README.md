@@ -903,9 +903,8 @@ multiple_results
 
 ## For non-python environmnet
 
-You can just process through online environment here.
-Below will render an iframe
-/i/https://www.youtube.com/embed/qkcx0kf6jME
+If you don't have a python environment, welcome to use [the service from my webiste][website] via replit.
+[website]: http://homepage.ntu.edu.tw/~b06208002/service/replit.html)
 
 Take this course for example, you can copy the link of whatever course you want:
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/webpage.png)
