@@ -904,8 +904,8 @@ multiple_results
 ## For non-python environmnet
 
 You can just process through online environment here.
-<iframe height="400px" width="100%" src="https://replit.com/@cartus0910/Berkeley-Course-Crawler?lite=true" scrolling="no" frameborder="no" allowtransparency="true" allowfullscreen="true" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-modals">
-</iframe>
+Below will render an iframe
+/i/https://www.youtube.com/embed/qkcx0kf6jME
 
 Take this course for example, you can copy the link of whatever course you want:
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/webpage.png)
