@@ -151,7 +151,6 @@ class course_info():
                 end_point = end_formatted.strftime("%H:%M")
                 period = pd.date_range(str_point, end_point, freq="30min").time
                 schedule.loc[period, DoW] = schedule.loc[period, DoW] + " \n " + course_name
-        display(HTML(schedule.to_html().replace("\\n","<br>")))
         return schedule
 
 
@@ -171,6 +170,7 @@ while True:
         schdl = input("Do you wanna schedule these selected courses?[yes/no]:")
         if save_info == 'yes':
             schedule = result.weekly_schedule(time_zone="SF")
+            print(schedule)
             save_schdl = input("Do you wanna save the schedule of selected courses to excel?[yes/no]:")
             if save_schdl == 'yes':
                 schedule.to_excel('Documents/course_schedule.xlsx', na_rep=False)
