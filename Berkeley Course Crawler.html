@@ -13084,14 +13084,14 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Functions-(You-can-skip-this-section,-but-remember-to-run-it)">Functions (You can skip this section, but remember to run it)<a class="anchor-link" href="#Functions-(You-can-skip-this-section,-but-remember-to-run-it)">&#182;</a></h2><p>How to run? Just move your cursor to the cell of code and click on "Run" button.</p>
+<p>This crawler helps you extract more detailed information from Berkeley Course webpage. Follow the steps below, and have your excel/google sheet/database prepared. You can organize your short list of courses.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
@@ -13100,104 +13100,154 @@ div#notebook {
 
 <span class="sd">@author: You, Bo-Xiang</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
 
-<span class="k">def</span> <span class="nf">course_extract</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">course_info</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url_list</span><span class="p">):</span>
+        
+        <span class="c1"># if the input is not a list, convert it to list</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">url_list</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">information</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Course_No.&quot;</span><span class="p">,</span><span class="s2">&quot;Serial_NO.&quot;</span><span class="p">,</span><span class="s2">&quot;Course_Name&quot;</span><span class="p">,</span><span class="s2">&quot;Location&quot;</span><span class="p">,</span>
+                                                 <span class="s2">&quot;Start_Time(SF_time)&quot;</span><span class="p">,</span><span class="s2">&quot;End_Time(SF_time)&quot;</span><span class="p">,</span><span class="s2">&quot;Start_Time(TW_time)&quot;</span><span class="p">,</span>
+                                                 <span class="s2">&quot;End_Time(TW_time)&quot;</span><span class="p">,</span><span class="s2">&quot;Level&quot;</span><span class="p">,</span><span class="s2">&quot;Type&quot;</span><span class="p">,</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span><span class="s2">&quot;Instructor(s)&quot;</span><span class="p">,</span>
+                                                 <span class="s2">&quot;Units&quot;</span><span class="p">,</span><span class="s2">&quot;Total_Capacity&quot;</span><span class="p">,</span><span class="s2">&quot;Total_Enrolled&quot;</span><span class="p">,</span>
+                                                 <span class="s2">&quot;Final_Examination&quot;</span><span class="p">,</span><span class="s2">&quot;Description&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">url_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">course_extract</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.8</span><span class="p">);</span>
     
-    <span class="kn">import</span> <span class="nn">requests</span>
-    <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-    <span class="kn">import</span> <span class="nn">json</span>
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-    <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
-    
-    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-    <span class="n">query</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;handlebarData theme_is_whitehot&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">attrs</span>
-    <span class="n">js_str</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="s2">&quot;data-json&quot;</span><span class="p">]</span>
-    <span class="n">js_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">js_str</span><span class="p">)</span>
-    <span class="n">course_num</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;displayName&quot;</span><span class="p">]</span>
-    <span class="n">serial_num</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
-    <span class="n">level</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;academicCareer&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
-    <span class="n">lecture</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;component&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
-    
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">][</span><span class="s2">&quot;WEB&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;formalDescription&quot;</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;Pending Reviews&quot;</span>
-    
-    <span class="n">instructor</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;assignedInstructors&quot;</span><span class="p">]</span>
-    <span class="n">instructors</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;instructor&quot;</span><span class="p">][</span><span class="s2">&quot;names&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;formattedName&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">instructor</span><span class="p">])</span>
-    
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;credit&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;fixed&quot;</span><span class="p">][</span><span class="s2">&quot;units&quot;</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39; to &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;credit&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">][</span><span class="s2">&quot;minUnits&quot;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;credit&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">][</span><span class="s2">&quot;maxUnits&quot;</span><span class="p">])])</span>
-    
-    <span class="c1"># date-time process</span>
-    <span class="n">fake_date</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsMonday&quot;</span><span class="p">]:</span>
-        <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsTuesday&quot;</span><span class="p">]:</span>
-        <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsWednesday&quot;</span><span class="p">]:</span>
-        <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsThursday&quot;</span><span class="p">]:</span>
-        <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsFriday&quot;</span><span class="p">]:</span>
-        <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
-    <span class="n">fake_starttime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;startTime&quot;</span><span class="p">],</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">fake_endtime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;endTime&quot;</span><span class="p">],</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">fake_start_dt</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fake_starttime</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_date</span><span class="p">]</span>
-    <span class="n">fake_end_dt</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fake_endtime</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_date</span><span class="p">]</span>
-    
-    <span class="n">sf_start_dt</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_start_dt</span><span class="p">])</span>
-    <span class="n">sf_end_dt</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_end_dt</span><span class="p">])</span>
-    
-    <span class="n">tw_start_dt</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">9</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_start_dt</span><span class="p">])</span>
-    <span class="n">tw_end_dt</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">9</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_end_dt</span><span class="p">])</span>
-    
-    <span class="n">description</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
-    <span class="n">final</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;finalExam&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
-    
-    <span class="n">information</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-            <span class="s2">&quot;Course_No.&quot;</span> <span class="p">:</span> <span class="n">course_num</span><span class="p">,</span>
-            <span class="s2">&quot;Serial_NO.&quot;</span> <span class="p">:</span> <span class="n">serial_num</span><span class="p">,</span>
-            <span class="s2">&quot;Course_Name&quot;</span> <span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-            <span class="s2">&quot;Level&quot;</span> <span class="p">:</span> <span class="n">level</span><span class="p">,</span>
-            <span class="s2">&quot;Type&quot;</span> <span class="p">:</span> <span class="n">lecture</span><span class="p">,</span>
-            <span class="s2">&quot;Mode&quot;</span> <span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
-            <span class="s2">&quot;Instructor(s)&quot;</span> <span class="p">:</span> <span class="n">instructors</span><span class="p">,</span>
-            <span class="s2">&quot;Units&quot;</span> <span class="p">:</span> <span class="n">units</span><span class="p">,</span>
-            <span class="s2">&quot;Start_Time(SF_time)&quot;</span> <span class="p">:</span> <span class="n">sf_start_dt</span><span class="p">,</span>
-            <span class="s2">&quot;End_Time(SF_time)&quot;</span> <span class="p">:</span> <span class="n">sf_end_dt</span><span class="p">,</span>
-            <span class="s2">&quot;Start_Time(TW_time)&quot;</span> <span class="p">:</span> <span class="n">tw_start_dt</span><span class="p">,</span>
-            <span class="s2">&quot;End_Time(TW_time)&quot;</span> <span class="p">:</span> <span class="n">tw_end_dt</span><span class="p">,</span>
-            <span class="s2">&quot;Final_Examination&quot;</span> <span class="p">:</span> <span class="n">final</span><span class="p">,</span>
-            <span class="s2">&quot;Description&quot;</span> <span class="p">:</span> <span class="n">description</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    
-    <span class="k">return</span> <span class="n">information</span>
+    <span class="c1"># Method 1: </span>
+    <span class="k">def</span> <span class="nf">course_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+        
+            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;handlebarData theme_is_whitehot&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">attrs</span>
+            <span class="n">js_str</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="s2">&quot;data-json&quot;</span><span class="p">]</span>
+            <span class="n">js_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">js_str</span><span class="p">)</span>
+            <span class="n">course_num</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;displayName&quot;</span><span class="p">]</span>
+            <span class="n">serial_num</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+            <span class="n">location</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;location&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;academicCareer&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+            <span class="n">lecture</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;component&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+            <span class="n">capacity</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;enrollmentStatus&quot;</span><span class="p">][</span><span class="s2">&quot;maxEnroll&quot;</span><span class="p">]</span>
+            <span class="n">enrolled</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;enrollmentStatus&quot;</span><span class="p">][</span><span class="s2">&quot;enrolledCount&quot;</span><span class="p">]</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">special_title</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">][</span><span class="s2">&quot;NOTE&quot;</span><span class="p">][</span><span class="s2">&quot;special-title&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;formalDescription&quot;</span><span class="p">]</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; : &quot;</span> <span class="o">+</span> <span class="n">special_title</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">][</span><span class="s2">&quot;WEB&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;formalDescription&quot;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;Pending Reviews&quot;</span>
+                
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">instructor</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;assignedInstructors&quot;</span><span class="p">]</span>
+                <span class="n">instructors</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;instructor&quot;</span><span class="p">][</span><span class="s2">&quot;names&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;formattedName&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">instructor</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">instructors</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">units</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;credit&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;fixed&quot;</span><span class="p">][</span><span class="s2">&quot;units&quot;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">units</span> <span class="o">=</span> <span class="s1">&#39; to &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;credit&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">][</span><span class="s2">&quot;minUnits&quot;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;credit&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="s2">&quot;range&quot;</span><span class="p">][</span><span class="s2">&quot;maxUnits&quot;</span><span class="p">])])</span>
+                
+            <span class="c1"># date process</span>
+            <span class="n">fake_date</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsMonday&quot;</span><span class="p">]:</span>
+                <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsTuesday&quot;</span><span class="p">]:</span>
+                <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsWednesday&quot;</span><span class="p">]:</span>
+                <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsThursday&quot;</span><span class="p">]:</span>
+                <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;meetsFriday&quot;</span><span class="p">]:</span>
+                <span class="n">fake_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
+            <span class="n">fake_starttime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;startTime&quot;</span><span class="p">],</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">fake_endtime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;meetings&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;endTime&quot;</span><span class="p">],</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">fake_start_dt</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fake_starttime</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_date</span><span class="p">]</span>
+            <span class="n">fake_end_dt</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fake_endtime</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_date</span><span class="p">]</span>
+            
+            <span class="n">sf_start_dt</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_start_dt</span><span class="p">])</span>
+            <span class="n">sf_end_dt</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_end_dt</span><span class="p">])</span>
+            
+            <span class="n">tw_start_dt</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">15</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_start_dt</span><span class="p">])</span>
+            <span class="n">tw_end_dt</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">15</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">fake_end_dt</span><span class="p">])</span>
+            
+            <span class="n">description</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+            <span class="n">final</span> <span class="o">=</span> <span class="n">js_dict</span><span class="p">[</span><span class="s2">&quot;course&quot;</span><span class="p">][</span><span class="s2">&quot;finalExam&quot;</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">information</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">information</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;Course_No.&quot;</span> <span class="p">:</span> <span class="n">course_num</span><span class="p">,</span>
+                    <span class="s2">&quot;Serial_NO.&quot;</span> <span class="p">:</span> <span class="n">serial_num</span><span class="p">,</span>
+                    <span class="s2">&quot;Course_Name&quot;</span> <span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;Location&quot;</span> <span class="p">:</span> <span class="n">location</span><span class="p">,</span>
+                    <span class="s2">&quot;Start_Time(SF_time)&quot;</span> <span class="p">:</span> <span class="n">sf_start_dt</span><span class="p">,</span>
+                    <span class="s2">&quot;End_Time(SF_time)&quot;</span> <span class="p">:</span> <span class="n">sf_end_dt</span><span class="p">,</span>
+                    <span class="s2">&quot;Start_Time(TW_time)&quot;</span> <span class="p">:</span> <span class="n">tw_start_dt</span><span class="p">,</span>
+                    <span class="s2">&quot;End_Time(TW_time)&quot;</span> <span class="p">:</span> <span class="n">tw_end_dt</span><span class="p">,</span>
+                    <span class="s2">&quot;Level&quot;</span> <span class="p">:</span> <span class="n">level</span><span class="p">,</span>
+                    <span class="s2">&quot;Type&quot;</span> <span class="p">:</span> <span class="n">lecture</span><span class="p">,</span>
+                    <span class="s2">&quot;Mode&quot;</span> <span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+                    <span class="s2">&quot;Instructor(s)&quot;</span> <span class="p">:</span> <span class="n">instructors</span><span class="p">,</span>
+                    <span class="s2">&quot;Units&quot;</span> <span class="p">:</span> <span class="n">units</span><span class="p">,</span>
+                    <span class="s2">&quot;Total_Capacity&quot;</span> <span class="p">:</span> <span class="n">capacity</span><span class="p">,</span>
+                    <span class="s2">&quot;Total_Enrolled&quot;</span> <span class="p">:</span> <span class="n">enrolled</span><span class="p">,</span>
+                    <span class="s2">&quot;Final_Examination&quot;</span> <span class="p">:</span> <span class="n">final</span><span class="p">,</span>
+                    <span class="s2">&quot;Description&quot;</span> <span class="p">:</span> <span class="n">description</span><span class="p">},</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># method 2:</span>
+    <span class="k">def</span> <span class="nf">weekly_schedule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_zone</span><span class="o">=</span><span class="s2">&quot;SF&quot;</span><span class="p">):</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">information</span>
+        <span class="c1"># define time zone</span>
+        <span class="k">if</span> <span class="n">time_zone</span> <span class="o">==</span> <span class="s2">&quot;SF&quot;</span><span class="p">:</span>
+            <span class="n">start_col</span> <span class="o">=</span> <span class="s2">&quot;Start_Time(SF_time)&quot;</span>
+            <span class="n">end_col</span> <span class="o">=</span> <span class="s2">&quot;End_Time(SF_time)&quot;</span>
+        
+        <span class="k">elif</span> <span class="n">time_zone</span> <span class="o">==</span> <span class="s2">&quot;TW&quot;</span><span class="p">:</span>
+            <span class="n">start_col</span> <span class="o">=</span> <span class="s2">&quot;Start_Time(TW_time)&quot;</span>
+            <span class="n">end_col</span> <span class="o">=</span> <span class="s2">&quot;End_Time(TW_time)&quot;</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: time_zone must be &quot;SF&quot; or &quot;TW&quot;.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> 
 
-<span class="k">def</span> <span class="nf">multiple_extract</span><span class="p">(</span><span class="n">url_list</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-    <span class="n">information</span> <span class="o">=</span>  <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-            <span class="s2">&quot;Course_No.&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Serial_NO.&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Course_Name&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Level&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Type&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Mode&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Instructor(s)&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Units&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Start_Time(SF_time)&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;End_Time(SF_time)&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Start_Time(TW_time)&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;End_Time(TW_time)&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Final_Examination&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;Description&quot;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">url_list</span><span class="p">:</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="n">course_extract</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">information</span> <span class="o">=</span> <span class="n">information</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">information</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">schedule</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+                <span class="s2">&quot;Monday&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Tuesday&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Wednesday&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Thursday&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Friday&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Saturday&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">},</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;23:30&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;30min&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+
+            <span class="n">str_time</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">start_col</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; / &quot;</span><span class="p">)</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">end_col</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; / &quot;</span><span class="p">)</span>
+            <span class="n">course_name</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="s2">&quot;Course_Name&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">str_time</span><span class="p">)):</span>
+                <span class="n">str_formatted</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="o">*</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">str_time</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">)[:</span><span class="mi">7</span><span class="p">])</span>
+                <span class="n">end_formatted</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="o">*</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_time</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">)[:</span><span class="mi">7</span><span class="p">])</span>
+                <span class="n">DoW</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">day_name</span><span class="p">[</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">str_time</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="s2">&quot;</span><span class="si">%a</span><span class="s2"> %H:%M&quot;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]]</span>
+                <span class="n">str_point</span> <span class="o">=</span> <span class="n">str_formatted</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M&quot;</span><span class="p">)</span>
+                <span class="n">end_point</span> <span class="o">=</span> <span class="n">end_formatted</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M&quot;</span><span class="p">)</span>
+                <span class="n">period</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">str_point</span><span class="p">,</span> <span class="n">end_point</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;30min&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">time</span>
+                <span class="n">schedule</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">period</span><span class="p">,</span> <span class="n">DoW</span><span class="p">]</span> <span class="o">=</span> <span class="n">schedule</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">period</span><span class="p">,</span> <span class="n">DoW</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\n</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="n">course_name</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">schedule</span><span class="o">.</span><span class="n">to_html</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;br&gt;&quot;</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">schedule</span>
 </pre></div>
 
     </div>
@@ -13205,16 +13255,9 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Setting-style">Setting style<a class="anchor-link" href="#Setting-style">&#182;</a></h3>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%HTML</span>
@@ -13263,14 +13306,26 @@ table.dataframe td, table.dataframe th {
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.-Export-information-of-course-of-your-interest">1. Export information of course of your interest<a class="anchor-link" href="#1.-Export-information-of-course-of-your-interest">&#182;</a></h3>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Example for one Course: </span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">course_extract</span><span class="p">(</span><span class="s2">&quot;https://classes.berkeley.edu/content/2020-fall-indeng-290-004-lec-004&quot;</span><span class="p">)</span> <span class="c1"># put the link between &quot;&quot;</span>
-<span class="n">result</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Example for three selected Course: </span>
+<span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://classes.berkeley.edu/content/2020-spring-geog-149b-001-lec-001&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;https://classes.berkeley.edu/content/2020-spring-geog-167ac-001-lec-001&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;https://classes.berkeley.edu/content/2020-spring-geog-200b-001-sem-001&quot;</span><span class="p">]</span>
+    
+<span class="n">result</span> <span class="o">=</span> <span class="n">course_info</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">information</span>
+<span class="n">info</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13283,7 +13338,7 @@ table.dataframe td, table.dataframe th {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[23]:</div>
+    <div class="prompt output_prompt">Out[3]:</div>
 
 
 
@@ -13309,36 +13364,82 @@ table.dataframe td, table.dataframe th {
       <th>Course_No.</th>
       <th>Serial_NO.</th>
       <th>Course_Name</th>
+      <th>Location</th>
+      <th>Start_Time(SF_time)</th>
+      <th>End_Time(SF_time)</th>
+      <th>Start_Time(TW_time)</th>
+      <th>End_Time(TW_time)</th>
       <th>Level</th>
       <th>Type</th>
       <th>Mode</th>
       <th>Instructor(s)</th>
       <th>Units</th>
-      <th>Start_Time(SF_time)</th>
-      <th>End_Time(SF_time)</th>
-      <th>Start_Time(TW_time)</th>
-      <th>End_Time(TW_time)</th>
+      <th>Total_Capacity</th>
+      <th>Total_Enrolled</th>
       <th>Final_Examination</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
-      <td>2020 Fall INDENG 290 004 LEC 004</td>
-      <td>32956</td>
-      <td>Special Topics in Industrial Engineering and O...</td>
-      <td>Graduate</td>
+      <th>0</th>
+      <td>2020 Spring GEOG 149B 001 LEC 001</td>
+      <td>31059</td>
+      <td>Climate Impacts and Risk Analysis</td>
+      <td>McCone 145</td>
+      <td>Mon 11:00 / Wed 11:00</td>
+      <td>Mon 12:30 / Wed 12:30</td>
+      <td>Tue 02:00 / Thu 02:00</td>
+      <td>Tue 03:30 / Thu 03:30</td>
+      <td>Undergraduate</td>
       <td>Lecture</td>
-      <td>Asynchronous Instruction</td>
-      <td>Barna  Saha</td>
-      <td>2 to 3</td>
-      <td>Tue 14:00 / Thu 14:00</td>
-      <td>Tue 15:29 / Thu 15:29</td>
-      <td>Tue 23:00 / Thu 23:00</td>
-      <td>Wed 00:29 / Fri 00:29</td>
-      <td>Written final exam conducted during the schedu...</td>
-      <td>Lectures and appropriate assignments on fundam...</td>
+      <td>Pending Reviews</td>
+      <td>Norman L Miller</td>
+      <td>3</td>
+      <td>50</td>
+      <td>39</td>
+      <td>Alternative method of final assessment</td>
+      <td>Climate impacts and risk analysis is the study...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2020 Spring GEOG 167AC 001 LEC 001</td>
+      <td>30924</td>
+      <td>Border Geographies, Migration and Decolonial M...</td>
+      <td>Genetics &amp; Plant Bio 100</td>
+      <td>Tue 12:30 / Thu 12:30</td>
+      <td>Tue 13:59 / Thu 13:59</td>
+      <td>Wed 03:30 / Fri 03:30</td>
+      <td>Wed 04:59 / Fri 04:59</td>
+      <td>Undergraduate</td>
+      <td>Lecture</td>
+      <td>Pending Reviews</td>
+      <td>Diana M Negrin</td>
+      <td>4</td>
+      <td>200</td>
+      <td>66</td>
+      <td>Alternative method of final assessment</td>
+      <td>This course examines how today’s bounded geogr...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2020 Spring GEOG 200B 001 SEM 001</td>
+      <td>19853</td>
+      <td>Contemporary Geographic Thought 2 (Geographica...</td>
+      <td>McCone 509</td>
+      <td>Wed 09:00</td>
+      <td>Wed 12:00</td>
+      <td>Thu 00:00</td>
+      <td>Thu 03:00</td>
+      <td>Graduate</td>
+      <td>Seminar</td>
+      <td>Pending Reviews</td>
+      <td>Sharad  Chari</td>
+      <td>5</td>
+      <td>14</td>
+      <td>6</td>
+      <td>No final exam</td>
+      <td>'Geographical Difference/Differentiation' is a...</td>
     </tr>
   </tbody>
 </table>
@@ -13353,11 +13454,11 @@ table.dataframe td, table.dataframe th {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># copy the result and paste it on your excel/Google Sheet/Database</span>
-<span class="n">result</span><span class="o">.</span><span class="n">to_clipboard</span><span class="p">(</span><span class="n">excel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">info</span><span class="o">.</span><span class="n">to_clipboard</span><span class="p">(</span><span class="n">excel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13370,12 +13471,8 @@ table.dataframe td, table.dataframe th {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Example for multiple Courses:</span>
-<span class="c1"># 1. Put all your desired course link into the list, separate them by &quot;,&quot;</span>
-<span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://classes.berkeley.edu/content/2020-fall-indeng-290-004-lec-004&quot;</span><span class="p">,</span> <span class="s2">&quot;https://classes.berkeley.edu/content/2020-fall-civeng-199-001-ind-001&quot;</span><span class="p">,</span> <span class="s2">&quot;https://classes.berkeley.edu/content/2020-fall-indeng-290-004-lec-004&quot;</span><span class="p">]</span>
-<span class="c1"># 2. Extract them as table</span>
-<span class="n">multiple_results</span> <span class="o">=</span> <span class="n">multiple_extract</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span>
-<span class="n">multiple_results</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># or save file as .xlsx directly</span>
+<span class="n">multiple_results</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s1">&#39;course_info.xlsx&#39;</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13383,13 +13480,498 @@ table.dataframe td, table.dataframe th {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2.-If-you-wanna-export-a-schedule-of-all-selected-courses">2. If you wanna export a schedule of all selected courses<a class="anchor-link" href="#2.-If-you-wanna-export-a-schedule-of-all-selected-courses">&#182;</a></h3>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 3. use this action to copy the result and paste it on your excel/Google Sheet/Database</span>
-<span class="n">multiple_results</span><span class="o">.</span><span class="n">to_clipboard</span><span class="p">(</span><span class="n">excel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">schedule</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">weekly_schedule</span><span class="p">(</span><span class="n">time_zone</span><span class="o">=</span><span class="s2">&quot;SF&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+      <th>Saturday</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>00:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>00:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>01:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>01:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>02:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>02:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>03:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>03:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>04:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>04:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>05:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>05:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>06:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>06:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>07:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>07:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>08:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>08:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>09:00:00</th>
+      <td></td>
+      <td></td>
+      <td><br> Contemporary Geographic Thought 2 (Geographical Difference and Differentiation)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>09:30:00</th>
+      <td></td>
+      <td></td>
+      <td><br> Contemporary Geographic Thought 2 (Geographical Difference and Differentiation)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>10:00:00</th>
+      <td></td>
+      <td></td>
+      <td><br> Contemporary Geographic Thought 2 (Geographical Difference and Differentiation)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>10:30:00</th>
+      <td></td>
+      <td></td>
+      <td><br> Contemporary Geographic Thought 2 (Geographical Difference and Differentiation)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>11:00:00</th>
+      <td><br> Climate Impacts and Risk Analysis</td>
+      <td></td>
+      <td><br> Climate Impacts and Risk Analysis <br> Contemporary Geographic Thought 2 (Geographical Difference and Differentiation)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>11:30:00</th>
+      <td><br> Climate Impacts and Risk Analysis</td>
+      <td></td>
+      <td><br> Climate Impacts and Risk Analysis <br> Contemporary Geographic Thought 2 (Geographical Difference and Differentiation)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>12:00:00</th>
+      <td><br> Climate Impacts and Risk Analysis</td>
+      <td></td>
+      <td><br> Climate Impacts and Risk Analysis <br> Contemporary Geographic Thought 2 (Geographical Difference and Differentiation)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>12:30:00</th>
+      <td><br> Climate Impacts and Risk Analysis</td>
+      <td><br> Border Geographies, Migration and Decolonial Movements of Latin America</td>
+      <td><br> Climate Impacts and Risk Analysis</td>
+      <td><br> Border Geographies, Migration and Decolonial Movements of Latin America</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>13:00:00</th>
+      <td></td>
+      <td><br> Border Geographies, Migration and Decolonial Movements of Latin America</td>
+      <td></td>
+      <td><br> Border Geographies, Migration and Decolonial Movements of Latin America</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>13:30:00</th>
+      <td></td>
+      <td><br> Border Geographies, Migration and Decolonial Movements of Latin America</td>
+      <td></td>
+      <td><br> Border Geographies, Migration and Decolonial Movements of Latin America</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>14:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>14:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>15:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>15:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>16:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>16:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>17:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>17:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>18:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>18:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>19:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>19:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>20:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>20:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>21:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>21:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>22:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>22:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>23:00:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>23:30:00</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># copy the schedule and paste it on your excel/Google Sheet/Database</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">to_clipboard</span><span class="p">(</span><span class="n">excel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13402,11 +13984,8 @@ table.dataframe td, table.dataframe th {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># NOW, Try it on your own for one link!</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">course_extract</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="c1"># insert link</span>
-<span class="n">result</span><span class="o">.</span><span class="n">to_clipboard</span><span class="p">(</span><span class="n">excel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span> <span class="c1"># copy the result, so you can paste it elsewhere</span>
-<span class="c1">#check the result</span>
-<span class="n">result</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># or save file as .xlsx directly</span>
+<span class="n">schedule</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s1">&#39;course_schedule.xlsx&#39;</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13414,17 +13993,29 @@ table.dataframe td, table.dataframe th {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Search-for-the-courses-that-interest-you">Search for the courses that interest you<a class="anchor-link" href="#Search-for-the-courses-that-interest-you">&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># NOW, Try it on your own for multiple link!</span>
-<span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="c1"># insert links, you can add as more links as you want</span>
-<span class="n">multiple_results</span> <span class="o">=</span> <span class="n">multiple_extract</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span>
-<span class="n">multiple_results</span><span class="o">.</span><span class="n">to_clipboard</span><span class="p">(</span><span class="n">excel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span> <span class="c1"># copy the result, so you can paste it elsewhere</span>
-<span class="c1">#check the result</span>
-<span class="n">multiple_results</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># NOW, Try it on your own with course of your interest!</span>
+<span class="n">url_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="c1"># insert links, you can add as more links as you want</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">course_info</span><span class="p">(</span><span class="n">url_list</span><span class="p">)</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">information</span>
+<span class="n">info</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="c1"># copy the result and paste it on your excel/Google Sheet/Database</span>
+<span class="n">info</span><span class="o">.</span><span class="n">to_clipboard</span><span class="p">(</span><span class="n">excel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
