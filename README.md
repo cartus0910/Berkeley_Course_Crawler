@@ -272,60 +272,6 @@ schedule = result.weekly_schedule(time_zone="SF")
       <td></td>
       <td></td>
     </tr>
-    <tr>
-      <th>15:00:00</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>15:30:00</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>16:00:00</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>16:30:00</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>17:00:00</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th>17:30:00</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
   </tbody>
 </table>
 
@@ -360,11 +306,48 @@ info.to_clipboard(excel=True,sep='\t')
 
 ```
 
-All the codes are available via **[my google colab .ipynb](https://colab.research.google.com/drive/1shtFq-xr6Q26QwZos4cMGl5AsS_Yhusz?usp=sharing)**, and you can make a copy to implement it on your onw.
+***
 
 ## For non-python environmnet
 
-If you don't have a python environment, welcome to use **[the service from my webiste](http://homepage.ntu.edu.tw/~b06208002/service/replit.html)** via replit.
+If you don't have a python environment, there are two options of online web environment to execute the codes and crawl your courses of interest.
+
+### 1. Google Colab
+
+All the codes are available via **[my google colab .ipynb](https://colab.research.google.com/drive/1shtFq-xr6Q26QwZos4cMGl5AsS_Yhusz?usp=sharing)**, and you can make a copy to implement it on your onw.
+
+Take this course for example, you can copy the link of whatever course you want:
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/webpage.png)
+
+1. Make a copy of .ipynb to your own drive (that make it possible to save the output).
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/goog_step1.png)
+
+2. Just ignore the codes I wrote and jump to the implementation block.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/goog_step2.png)
+
+3. Execute all the codes above the implementation part (including import the modules and the class of crawling function.)
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/goog_step3.png)
+
+4. Substitute all the links to course webpage to your selected ones. Remember to put them within quotations("") and divide them with comma(,).
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/goog_step4.png)
+
+5. Execute the codes and you'll see the preview of all course information.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/goog_step5.png)
+
+6. Execute the next block to save and download the course information.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/goog_step6.png)
+
+7. If you want to schedule all your selected courses, execute the schedule function and you'll see the preview.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/goog_step7.png)
+
+8. Execute the next block to save and download the course schedule.
+![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/goog_step8.png)
+
+***
+
+### 2. Replit
+
+Welcome to use **[the service from my webiste](http://homepage.ntu.edu.tw/~b06208002/service/replit.html)** via replit.
 ![image](https://github.com/cartus0910/Berkeley_Course_Crawler/blob/master/Steps_img/service_webpage.png)
 
 Take this course for example, you can copy the link of whatever course you want:
